@@ -4,6 +4,11 @@ import { fetchContacts, addContact, deleteContact } from "./operations";
 const contactsSlice = createSlice({
   name: "contacts",
   initialState: { items: [], loading: false, error: null },
+  reducers: {
+    flushContacts: (state) => {
+      state.items = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchContacts.pending, (state) => {
@@ -47,5 +52,5 @@ const contactsSlice = createSlice({
   },
 });
 
-export const selectContacts = (state) => state.contacts.items;
+export const { flushContacts } = contactsSlice.actions;
 export const contactsReducer = contactsSlice.reducer;

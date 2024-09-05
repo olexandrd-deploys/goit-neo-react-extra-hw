@@ -1,7 +1,17 @@
 const HomePage = () => {
   return (
     <div>
-      <h1>Hello world</h1>
+      <h1>Contact Book App</h1>
+      <p>
+        Author{" "}
+        <a
+          href="https://github.com/olexandrd/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          https://github.com/olexandrd/
+        </a>
+      </p>
     </div>
   );
 };
