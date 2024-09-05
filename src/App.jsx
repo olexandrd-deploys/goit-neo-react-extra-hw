@@ -1,53 +1,36 @@
+import { Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import HomePage from "./pages/HomePage/HomePage";
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
+import Layout from "./components/Layout/Layout";
+import ContactsPage from "./pages/ContactsPage/ContactsPage";
+import LoginPage from "./pages/LoginPage/LoginPage";
 import { useDispatch, useSelector } from "react-redux";
-import { lazy, Suspense, useEffect } from "react";
-import SearchBox from "./components/SearchBox/SearchBox";
-import ContactForm from "./components/ContactForm/ContactForm";
-import css from "./App.module.css";
-import {
-  selectContacts,
-  selectError,
-  selectFilteredContacts,
-  selectIsLoading,
-} from "./redux/selectors";
-import { fetchContacts } from "./redux/contactsOps";
-import Loader from "./components/Loader/Loader";
-const LoadError = lazy(() => import("./components/LoadError/LoadError"));
-const ContactList = lazy(() => import("./components/ContactList/ContactList"));
-const AddContactNotice = lazy(() =>
-  import("./components/AddContactNotice/AddContactNotice")
-);
-const NoContactsNotice = lazy(() =>
-  import("./components/NoContactsNotice/NoContactsNotice")
-);
+import { refreshUser } from "./redux/auth/operations";
+import { selectIsRefreshing } from "./redux/auth/selectors";
+import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
 
 const App = () => {
   const dispatch = useDispatch();
-  const loading = useSelector(selectIsLoading);
-  const error = useSelector(selectError);
-  const filteredContacts = useSelector(selectFilteredContacts);
-  const allContacts = useSelector(selectContacts);
+  const isRefreshing = useSelector(selectIsRefreshing);
 
   useEffect(() => {
-    dispatch(fetchContacts());
+    dispatch(refreshUser());
   }, [dispatch]);
 
-  return (
-    <div className={css.app}>
-      <h1 className={css.header}>Phonebook</h1>
-      <ContactForm />
-      <SearchBox />
-      <Suspense fallback={<Loader />}>
-        {filteredContacts.length > 0 ? (
-          <ContactList />
-        ) : (
-          !(loading || !!error) && !!allContacts.length && <NoContactsNotice />
-        )}
-        {allContacts.length === 0 && !(loading || !!error) && (
-          <AddContactNotice />
-        )}
-        {error && <LoadError />}
-      </Suspense>
-      {loading && <Loader />}
+  return isRefreshing ? (
+    <b>Refreshing user...</b>
+  ) : (
+    <div>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/contacts" element={<ContactsPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Layout>
     </div>
   );
 };

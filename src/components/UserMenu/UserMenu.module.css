@@ -1,0 +1,22 @@
+.UserMenu {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+.UserMenu>p {
+    margin: 0;
+}
+
+.logout {
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: rgb(255, 255, 255);
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0 10px;
+    display: block;
+}
