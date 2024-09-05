@@ -1,12 +1,24 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 import { FaUser, FaPhone } from "react-icons/fa6";
+import Modal from "react-modal";
 import css from "./Contact.module.css";
 import { selectIsLoading } from "../../redux/contacts/selectors";
 import { deleteContact } from "../../redux/contacts/operations";
 
 const Contact = ({ name, number, id }) => {
   const dispatch = useDispatch();
+  const [modalIsOpen, setIsOpen] = useState(false);
   const loading = useSelector(selectIsLoading);
+  Modal.setAppElement("#root");
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
 
   const handleDelete = (id) => {
     dispatch(deleteContact(id));
@@ -27,12 +39,43 @@ const Contact = ({ name, number, id }) => {
       <button
         disabled={loading}
         onClick={() => {
-          handleDelete(id);
+          openModal(id);
         }}
         type="button"
       >
         Delete
       </button>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Confirm delete"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+          content: {
+            width: "300px",
+            height: "200px",
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          },
+        }}
+      >
+        <h2>Are you sure you want to delete this contact?</h2>
+        <div>
+          <button
+            onClick={() => {
+              handleDelete(id);
+              closeModal();
+            }}
+          >
+            Yes
+          </button>
+          <button onClick={closeModal}>No</button>
+        </div>
+      </Modal>
     </div>
   );
 };
